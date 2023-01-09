@@ -142,23 +142,15 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
 
 
 @wholeban.handle()
-async def _(bot: Bot, event: GroupMessageEvent):
-    try:
-        await bot.set_group_whole_ban(group_id=event.group_id, enable=True)
-    except Exception as e:
-        logger.warning(repr(e))
-        return
-    await wholeban.finish('天黑请闭眼~')
-    
+async def _(bot: Bot, event: MessageEvent, arg: Message = CommandArg()):
+    msg = await setwholeban(True, bot, event, arg)
+    await wholeban.finish(msg if msg != True else '天黑请闭眼~')
+
 
 @unwholeban.handle()
-async def _(bot: Bot, event: GroupMessageEvent):
-    try:
-        await bot.set_group_whole_ban(group_id=event.group_id, enable=False)
-    except Exception as e:
-        logger.warning(repr(e))
-        return
-    await unwholeban.finish('天亮请睁眼~')
+async def _(bot: Bot, event: MessageEvent, arg: Message = CommandArg()):
+    msg = await setwholeban(False, bot, event, arg)
+    await wholeban.finish(msg if msg != True else '天亮请睁眼~')
 
 
 @setadmin.handle()
@@ -313,6 +305,30 @@ def ban_time(arg: Message = CommandArg()) -> int:
         return 43200
 
 
+async def setwholeban(
+    enable: bool,
+    bot: Bot,
+    event: MessageEvent,
+    arg: Message = CommandArg(),
+):
+    gids = arg.extract_plain_text().strip().split()
+    if not gids:
+        if isinstance(event, GroupMessageEvent):
+            gids.append(f'{event.group_id}')
+        else:
+            return '用法: \n开启(关闭)全员禁言 群 群1 群2 ...'
+    for gid in gids:
+        if not is_number(gid):
+            return '参数错误, 群号必须是数字..'
+    try:
+        for gid in gids:
+            await bot.set_group_whole_ban(group_id=int(gid), enable=enable)
+    except Exception as e:
+        logger.warning(repr(e))
+        return None
+    return True
+    
+
 def is_number(s: str) -> bool:
     try:
         float(s)
@@ -339,4 +355,4 @@ group_member_event = on_notice(priority=1)
 @group_member_event.handle()
 async def _(event: GroupDecreaseNoticeEvent):
     await asyncio.sleep(random.random()*2+1)
-    await group_member_event.finish(f'{event.user_id}离开了我们...')
+    await group_member_event.finish(f'{event.user_id}离开了我们')

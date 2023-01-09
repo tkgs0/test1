@@ -122,14 +122,14 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
     _time = ban_time(arg)
     msg = await ban_user(bot, event.group_id, uids,
         _time if _time <= 30*24*60*60-60 else 30*24*60*60-60)
-    await ban.finish(msg if msg else None)
+    await ban.finish(msg)
 
 
 @unban.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     uids = [int(at.data['qq']) for at in event.get_message()['at']]
     msg = await ban_user(bot, event.group_id, uids, 0)
-    await unban.finish(msg if msg else None)
+    await unban.finish(msg)
 
 
 @selfban.handle()
@@ -156,33 +156,36 @@ async def _(bot: Bot, event: MessageEvent, arg: Message = CommandArg()):
 @setadmin.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     uids = [int(at.data['qq']) for at in event.get_message()['at']]
+    x = True
     try:
         for uid in uids:
             await bot.set_group_admin(
                 group_id=event.group_id, user_id=uid, enable=True)
     except Exception as e:
         logger.warning(repr(e))
-        return
-    await setadmin.finish('设置成功~')
+        x = None
+    await setadmin.finish(x if not x else '设置成功~')
 
 
 @unsetadmin.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     uids = [int(at.data['qq']) for at in event.get_message()['at']]
+    x = True
     try:
         for uid in uids:
             await bot.set_group_admin(
                 group_id=event.group_id, user_id=uid, enable=False)
     except Exception as e:
         logger.warning(repr(e))
-        return
-    await unsetadmin.finish('设置成功~')
+        x = None
+    await unsetadmin.finish(x if not x else '设置成功~')
 
 
 @setgroupcard.handle()
 async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
     uids = [int(at.data['qq']) for at in event.get_message()['at']]
     content = arg.extract_plain_text().strip()
+    x = True
     try:
         for uid in uids:
             await bot.set_group_card(
@@ -192,14 +195,15 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
             )
     except Exception as e:
         logger.warning(repr(e))
-        return
-    await setgroupcard.finish('设置成功~')
+        x = None
+    await setgroupcard.finish(x if not x else '嗯, 很棒的名字呢~')
 
 
 @specialtitle.handle()
 async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
     uids = [int(at.data['qq']) for at in event.get_message()['at']]
     content = arg.extract_plain_text().strip()
+    x = True
     try:
         for uid in uids:
             await bot.set_group_special_title(
@@ -210,13 +214,14 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
             )
     except Exception as e:
         logger.warning(repr(e))
-        return
-    await specialtitle.finish('设置成功~')
+        x = None
+    await specialtitle.finish(x if not x else '嗯, 很棒的头衔呢~')
 
 
 @applyspecialtitle.handle()
 async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
     content = arg.extract_plain_text().strip()
+    x = True
     try:
         await bot.set_group_special_title(
             group_id=event.group_id,
@@ -226,8 +231,8 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
         )
     except Exception as e:
         logger.warning(repr(e))
-        return
-    await specialtitle.finish('嗯, 很棒的头衔呢~')
+        x = None
+    await specialtitle.finish(x if not x else '嗯, 很棒的头衔呢~')
 
 
 @kick.handle()
@@ -280,13 +285,14 @@ async def _(event: MessageEvent, bot: Bot, arg: Message = CommandArg()):
 
 
 async def ban_user(bot: Bot, gid: int, userlist: list, _time: int):
+    x = True
     try:
         for user in userlist:
             await bot.set_group_ban(user_id=user, group_id=gid, duration=_time)
     except Exception as e:
         logger.warning(repr(e))
-        return
-    return '设置成功~'
+        x = None
+    return x if not x else '设置成功~'
 
 
 def ban_time(arg: Message = CommandArg()) -> int:
@@ -320,13 +326,14 @@ async def setwholeban(
     for gid in gids:
         if not is_number(gid):
             return '参数错误, 群号必须是数字..'
+    x = True
     try:
         for gid in gids:
             await bot.set_group_whole_ban(group_id=int(gid), enable=enable)
     except Exception as e:
         logger.warning(repr(e))
-        return None
-    return True
+        x = None
+    return x if not x else True
     
 
 def is_number(s: str) -> bool:
@@ -355,4 +362,4 @@ group_member_event = on_notice(priority=1)
 @group_member_event.handle()
 async def _(event: GroupDecreaseNoticeEvent):
     await asyncio.sleep(random.random()*2+1)
-    await group_member_event.finish(f'{event.user_id}离开了我们')
+    await group_member_event.finish(f'一位不愿透露姓名的网友({event.user_id})离开了我们...')

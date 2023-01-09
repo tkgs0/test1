@@ -339,4 +339,4 @@ group_member_event = on_notice(priority=1)
 @group_member_event.handle()
 async def _(event: GroupDecreaseNoticeEvent):
     await asyncio.sleep(random.random()*2+1)
-    await group_member_event.finish(f'{event.user_id}离开了我们')
+    await group_member_event.finish(f'{event.user_id}离开了我们...')

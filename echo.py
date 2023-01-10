@@ -42,8 +42,8 @@ echo = on_command(
 )
 
 @echo.handle()
-async def echo_escape(event: MessageEvent):
-    msg = event.get_plaintext()
+async def echo_escape(arg: str = RawCommand()):
+    msg = arg
     await echo.finish(Message(msg))
 
 

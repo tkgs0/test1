@@ -5,7 +5,7 @@ from nonebot.adapters.onebot.v11 import (
     MessageSegment,
     unescape
 )
-from nonebot.params import CommandArg
+from nonebot.params import CommandArg, RawCommand
 from nonebot.plugin import on_command
 from nonebot.permission import SUPERUSER
 

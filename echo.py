@@ -1,11 +1,10 @@
 from nonebot.rule import to_me
 from nonebot.adapters.onebot.v11 import (
     Message,
-    MessageEvent,
     MessageSegment,
     unescape
 )
-from nonebot.params import CommandArg, RawCommand
+from nonebot.params import CommandArg
 from nonebot.plugin import on_command
 from nonebot.permission import SUPERUSER
 
@@ -42,9 +41,24 @@ echo = on_command(
 )
 
 @echo.handle()
-async def echo_escape(arg: str = RawCommand()):
-    msg = arg
+async def _(arg: Message = CommandArg()):
+    msg = unescape(str(arg))
     await echo.finish(Message(msg))
+
+
+
+echoo = on_command(
+    ">echo",
+    rule=to_me(),
+    priority=5,
+    block=True,
+    permission=SUPERUSER
+)
+
+@echoo.handle()
+async def _(arg: Message = CommandArg()):
+    msg = unescape(str(arg))
+    await echoo.finish(msg)
 
 
 

@@ -19,6 +19,7 @@ x = 0
 n = len(filepath := list(filepath))
 
 if not n:
+    print('没有扫描到json文件.')
     exit(-1)
 
 for _file in filepath:

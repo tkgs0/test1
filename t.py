@@ -42,8 +42,8 @@ for _file in filepath:
             ),
             encoding='utf-8'
         )
-    except:
-        e.append(_file.name)
+    except Exception as ee:
+        e.append(f'{_file.name} : {repr(ee)}')
         continue
 
 print('done.')

@@ -14,13 +14,15 @@ filepath = Path('.').rglob(r'*.json')
 
 
 start = time.time()
-print('loading...')
 x = 0
 n = len(filepath := list(filepath))
+e = list()
 
 if not n:
     print('没有扫描到json文件.')
     exit(-1)
+
+print('loading...')
 
 for _file in filepath:
     x += 1
@@ -41,6 +43,9 @@ for _file in filepath:
             encoding='utf-8'
         )
     except:
+        e.append(_file.name)
         continue
 
 print('done.')
+if e:
+    print(f'{len(e)}个错误\n'+'\n'.join(e))

@@ -1,6 +1,7 @@
 from nonebot.rule import to_me
 from nonebot.adapters.onebot.v11 import (
     Message,
+    MessageEvent,
     MessageSegment,
     unescape
 )
@@ -41,7 +42,7 @@ echo = on_command(
 )
 
 @echo.handle()
-async def _(arg: Message = CommandArg()):
+async def echo_escape(arg: Message = CommandArg()):
     msg = unescape(str(arg))
     await echo.finish(Message(msg))
 
@@ -56,8 +57,8 @@ echoo = on_command(
 )
 
 @echoo.handle()
-async def _(arg: Message = CommandArg()):
-    msg = unescape(str(arg))
+async def _(event: MessageEvent):
+    msg = event.get_plaintext()
     await echoo.finish(msg)
 
 

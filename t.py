@@ -10,7 +10,7 @@ except ModuleNotFoundError:
     import json
 
 
-filepath = Path('.').rglob(r'*.json')
+filepath = Path(__file__).parent.rglob(r'*.json')
 
 
 start = time.time()

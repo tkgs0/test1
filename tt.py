@@ -16,7 +16,7 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
 }
 
-async def get_url(url, headers = headers, redirects = True):
+async def get_url(url, headers = headers, redirects = False):
     async with AsyncClient() as client:
         response = await client.get(
             url,
@@ -25,7 +25,7 @@ async def get_url(url, headers = headers, redirects = True):
             timeout = 120
         )
         if response.status_code == 200:
-            filepath.write_text(response.text)
+            filepath.write_bytes(response.content)
         return response.status_code
 
 

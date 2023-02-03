@@ -22,7 +22,7 @@ async def get_url(url, headers = headers, redirects = False):
             url,
             headers = headers,
             follow_redirects = redirects,
-            timeout = 120
+            timeout = 30
         )
         if response.status_code == 200:
             filepath.write_bytes(response.content)

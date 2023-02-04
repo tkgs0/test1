@@ -2,8 +2,10 @@ from ast import literal_eval
 from httpx import AsyncClient
 try:
     import ujson as json
+    from ujson import JSONDecodeError
 except ModuleNotFoundError:
     import json
+    from json import JSONDecodeError
 from nonebot import on_command
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
@@ -23,7 +25,7 @@ async def _(args: Message = CommandArg()):
         await callapi.finish('需要参数! baka')
     url, params = args.extract_plain_text().split(maxsplit=1)
     res = await get_api(url, params)
-    await callapi.finish(json.dumps(res, indent=2, ensure_ascii=False))
+    await callapi.finish(res)
 
 
 async def get_api(url: str, params: str):
@@ -36,7 +38,11 @@ async def get_api(url: str, params: str):
     async with AsyncClient() as client:
         try:
             response = await client.get(url=url, params=params, headers=headers, timeout=30)
-            res = response.json()
+            try:
+                res = response.json()
+                res = json.dumps(res, indent=2, ensure_ascii=False)
+            except JSONDecodeError:
+                res = ',\n'.join(response.text.split(', '))
             await response.aclose()
             return res
         except Exception as e:

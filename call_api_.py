@@ -37,10 +37,9 @@ async def get_api(url: str, params: str):
         try:
             response = await client.get(url=url, params=params, headers=headers, timeout=30)
             try:
-                res = response.json()
-                res = json.dumps(res, indent=2, ensure_ascii=False)
+                res = json.dumps(response.json(), indent=2, ensure_ascii=False)
             except:
-                res = ',\n'.join(response.text.split(', '))
+                res = response.text
             await response.aclose()
             return res
         except Exception as e:

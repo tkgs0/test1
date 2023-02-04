@@ -2,10 +2,8 @@ from ast import literal_eval
 from httpx import AsyncClient
 try:
     import ujson as json
-    from ujson import JSONDecodeError
 except ModuleNotFoundError:
     import json
-    from json import JSONDecodeError
 from nonebot import on_command
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
@@ -41,7 +39,7 @@ async def get_api(url: str, params: str):
             try:
                 res = response.json()
                 res = json.dumps(res, indent=2, ensure_ascii=False)
-            except JSONDecodeError:
+            except:
                 res = ',\n'.join(response.text.split(', '))
             await response.aclose()
             return res

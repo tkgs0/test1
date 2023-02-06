@@ -21,6 +21,7 @@ body:
   - type: markdown
     attributes:
       value: "## 注意事项"
+  - type: markdown
     attributes:
       value: |
         在提 issue 前请确保你仔细阅读过文档，搜索过现有的 issue ，并确保你使用的是最新的 nonebot-plugin-example 。
@@ -128,10 +129,10 @@ body:
     id: log
     attributes:
       label: 日志信息
-      placeholder: 问题日志，可截图，可粘贴文本，可上传日志文件，如粘贴文本请务必用 markdown 代码块包裹。
       description: |
         提供有助于诊断问题的任何日志和完整的错误信息。
-        **请注意将您的敏感信息从日志中过滤或替换！**
+        可截图，可粘贴文本，可上传日志文件，如粘贴文本请务必用 markdown 代码块包裹。
+      placeholder: 请注意将您的敏感信息从日志中过滤或替换。
     validations:
       required: true
 

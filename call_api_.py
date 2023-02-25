@@ -17,9 +17,10 @@ param=XXX
 
 example:
   /api http://127.0.0.1:8080/send_msg
-  token=XXXX
+  token=XXX
   user_id=123456
   group_id=123456
+  message=XXXXXX
 
 ⓘ不支持ws/wss
 

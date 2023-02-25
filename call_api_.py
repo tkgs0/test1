@@ -1,4 +1,4 @@
-from ast import literal_eval
+import re
 from httpx import AsyncClient
 try:
     import ujson as json
@@ -8,6 +8,22 @@ from nonebot import on_command
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import Message
+
+
+_help: str = '''
+
+/api url
+param=XXX
+
+example:
+  /api http://127.0.0.1:8080/send_msg
+  token=XXXX
+  user_id=123456
+  group_id=123456
+
+ⓘ不支持ws/wss
+
+'''.strip()
 
 
 callapi = on_command(
@@ -20,26 +36,40 @@ callapi = on_command(
 @callapi.handle()
 async def _(args: Message = CommandArg()):
     if not args:
-        await callapi.finish('需要参数! baka')
+        await callapi.finish(_help)
     url, params = args.extract_plain_text().split(maxsplit=1)
-    res = await get_api(url, params)
+    try:
+        res = await get_api(url, handle_params(params))
+    except Exception as e:
+        res = repr(e)
     await callapi.finish(res)
 
 
-async def get_api(url: str, params: str):
-    headers = {
-        'referer': 'http://127.0.0.1',
+def handle_params(msg: str) -> dict:
+    args: list = msg.split('\n')
+    params: dict = {}
+    for i in args:
+        par = i.split('=', maxsplit=1)
+        params.update({par[0]: par[1]})
+    return params
+
+
+async def get_api(url: str, params: dict) -> str:
+    if not url.startswith('http://') or url.startswith('https://'):
+        url = 'http://' + url
+
+    headers: dict = {
+        'referer': re.search(r'^http(s?):\/\/[^\/]*', url).group(),  # type: ignore
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
     }
-    params = literal_eval(params)
 
     async with AsyncClient() as client:
         try:
             response = await client.get(url=url, params=params, headers=headers, timeout=30)
             try:
-                res = json.dumps(response.json(), indent=2, ensure_ascii=False)
+                res: str = json.dumps(response.json(), indent=2, ensure_ascii=False)
             except:
-                res = response.text
+                res: str = response.text
             await response.aclose()
             return res
         except Exception as e:

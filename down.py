@@ -51,13 +51,13 @@ timeout: int = 120
 semaphore: int = 16
 
 
-async def run() -> None:
+async def run(fileList: str = fileList) -> None:
     if not fileList:
         return
     down: list = []
     sem = asyncio.Semaphore(semaphore)
     for x in range(len(file := fileList.split("\n"))):
-        filename, url = file[x].split()
+        filename, url = file[x].split(maxsplit=1)
         down.append(dload(sem=sem, url=url, filename=filename))
     with progress:
         await asyncio.gather(*down)
@@ -117,4 +117,5 @@ async def dload(sem, url: str, filename: str) -> None:
 
 
 if __name__ == '__main__':
-    asyncio.run(run())
+    from sys import argv
+    asyncio.run(run(' '.join(argv[1:3]))) if argv[1:] else asyncio.run(run())

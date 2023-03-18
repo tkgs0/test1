@@ -4,10 +4,7 @@
 
 import time
 from pathlib import Path
-try:
-    import ujson as json
-except ModuleNotFoundError:
-    import json
+import ujson as json
 
 
 filepath = Path(__file__).parent.rglob(r'*.json')

@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
-"""
+h: str = """
 环境要求: Python3.8 以上
 安装依赖: pip install -U httpx rich
 """
 
-from pathlib import Path
-import asyncio, httpx
-from rich.progress import (
-    BarColumn,
-    DownloadColumn,
-    Progress,
-    TextColumn,
-    TransferSpeedColumn,
-)
+try:
+    from pathlib import Path
+    import asyncio, httpx
+    from rich.progress import (
+        BarColumn,
+        DownloadColumn,
+        Progress,
+        TextColumn,
+        TransferSpeedColumn,
+    )
+except ModuleNotFoundError:
+    print(h)
+    exit(-1)
 
 
 # 文件目录

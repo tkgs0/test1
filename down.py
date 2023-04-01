@@ -3,7 +3,7 @@
 
 h: str = """
 环境要求: Python3.8 以上
-安装依赖: pip install -U httpx rich
+依赖安装: pip install -U httpx rich
 """
 
 try:

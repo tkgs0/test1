@@ -97,6 +97,9 @@ async def dload(sem, url: str, filename: str) -> None:
             follow_redirects=True,
             timeout=timeout,
         ) as resp:
+            if resp.status_code != 200:
+                progress.console.log(f"{filename}: {resp.status_code}")
+                return
 
             total = resp.headers.get("Content-Length")
 
@@ -113,9 +116,6 @@ async def dload(sem, url: str, filename: str) -> None:
                         task_id,
                         advance=len(chunk),
                     )
-
-            if resp.status_code != 200:
-                progress.console.log(f"{filename}: {resp.status_code}")
 
             await asyncio.to_thread(progress.remove_task, task_id)
 

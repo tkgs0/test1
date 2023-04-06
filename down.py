@@ -22,7 +22,7 @@ except ModuleNotFoundError:
 
 
 # 文件目录
-dirPath: str = "./"
+dirPath: str = ""
 
 # 文件列表
 # 格式:
@@ -85,7 +85,7 @@ async def dload(sem, url: str, filename: str) -> None:
     filePath: Path = (
         Path(dirPath.strip()) / filename.strip()
         if dirPath.strip()
-        else Path(__file__) / filename.strip()
+        else Path(filename.strip())
     )
     filePath.parent.mkdir(parents=True, exist_ok=True)
 

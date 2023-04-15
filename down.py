@@ -33,7 +33,7 @@ dirPath: str = ""
 """
 fileList: str = """
 
-gocq.tgz   https://github.com/Mrs4s/go-cqhttp/releases/download/v1.0.0-rc5/go-cqhttp_linux_amd64.tar.gz
+https://ptable.com/image/元素周期表.svg
 
 """.strip()
 
@@ -58,14 +58,38 @@ semaphore: int = 16
 async def run(fileList: str = fileList) -> None:
     if not fileList:
         return
-    down: list = []
-    sem = asyncio.Semaphore(semaphore)
-    for x in range(len(file := fileList.split("\n"))):
-        filename, url = file[x].split(maxsplit=1)
+
+    down, namelist, sem = [], [], asyncio.Semaphore(semaphore)
+
+    for x in range(len(files := fileList.splitlines())):
+        if not (file := files[x].split(maxsplit=1)):
+            continue
+        filename, url = (
+            file
+            if file[1:]
+            else [(Path(file[0]).name.split('?')[:1] or ['file'])[0], file[0]]
+        )
+        namelist.append(filename := check_name(filename, namelist))
         down.append(dload(sem=sem, url=url, filename=filename))
+
     with progress:
         await asyncio.gather(*down)
+
     progress.console.log("执行完毕.")
+
+
+def check_name(filename: str, namelist: list) -> str:
+    filename = httpx.URL(filename).path
+    i: int = 1
+    if filename in namelist:
+        try:
+            name, suffix = filename.split('.')
+        except ValueError:
+            name, suffix = filename, ''
+        while f"{name}_{i}.{suffix}" in namelist:
+            i += 1
+        return f"{name}_{i}.{suffix}"
+    return filename
 
 
 progress = Progress(

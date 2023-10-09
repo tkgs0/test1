@@ -42,7 +42,7 @@ params: dict = {}
 
 # 请求头
 headers: dict = {
-    "User-Agent": "Mozilla/5.0 (Linux; arm64; Android 12; SM-S9080) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 YaBrowser/23.0.0.00.00 SA/3 Mobile Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Linux; arm64; Android 12; SM-S9080) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 YaBrowser/24.0.0.00.00 SA/3 Mobile Safari/537.36",
 }
 
 # 饼干

@@ -7,7 +7,7 @@ from pathlib import Path
 import ujson as json
 
 
-filepath = Path(__file__).parent.rglob(r'*.json')
+filepath = Path().rglob(r'*.json')
 
 
 start = time.time()
